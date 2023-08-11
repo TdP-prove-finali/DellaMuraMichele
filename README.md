@@ -1,4 +1,4 @@
-# Tesi - DellaMuraMichele
+# Tesi - Della Mura Michele
 ## Simulatore incidenti stradali
 
 **Istruzioni per installazione:**
