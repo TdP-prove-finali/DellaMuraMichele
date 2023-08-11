@@ -1,7 +1,7 @@
 # DellaMuraMichele
 Simulatore incidenti stradali
 
-Istruzioni per istallazione.
+Istruzioni per installazione.
 
 -Forkare e clonare sul proprio editor (ad esempio Eclipse) il progetto al link: https://github.com/TdP-prove-finali/DellaMuraMichele
 
