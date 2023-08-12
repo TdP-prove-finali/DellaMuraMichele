@@ -50,6 +50,7 @@ public class FXMLController {
     	
     	txtResult.clear();
     	// recupero valori immessi dall'utente con i relativi controlli  	
+    	
     	// controlli errore comboBox
     	Integer year = this.cmbYear.getValue();
     	if (year==null) {
@@ -62,9 +63,11 @@ public class FXMLController {
         this.model.creaGrafo(year);
   
         // per verificare che il grafo sia creato con l'esatto numero di vertici e archi
-//       this.txtResult.setText("La città presenta " + this.model.getNVertici() + " distretti e ha " + this.model.getNArchi() +" archi\n");
+//      this.txtResult.setText("La città presenta " + this.model.getNVertici() + " distretti e ha " + this.model.getNArchi() +" archi\n");
+        
         this.txtResult.setText("La città presenta " + this.model.getNVertici() + " distretti\n");
         
+        this.cmbYear.setDisable(true);        
         this.btnSimulation.setDisable(false);
         this.cmbMonth.setDisable(false);
         this.txtNumberAmbulance.setDisable(false);
@@ -80,31 +83,60 @@ public class FXMLController {
     @FXML
     void handleSimulate(ActionEvent event) {
     	
-//    	// controlli errore comboBox
-//    	String nomeTeam = this.cmbSquadra.getValue();
-//    	if (nomeTeam==null) {
-//    	    this.txtResult.setText("Please select a Team");
-//    	    return;
-//    	}
-//    	Integer anno = this.cmbAnno.getValue();
-//    	if (anno==null) {
-//    	    this.txtResult.setText("Please select un anno");
-//    	    return;
-//    	}
-//    	
-//    	// controlli errore numero intero
-//    	int txtTifosi =0;
-//    	try {
-//    		txtTifosi = Integer.parseInt( this.txtTifosi.getText() );
-//    	} catch(NumberFormatException e) {
-//    	    this.txtResult.setText("Invalid argument. Il numero di tifosi must be a integer!");
-//    	    return;
-//    	}
-//    	// controllo che il numero non sia negativo
-//    	if(txtTifosi<0) {
-//    	  this.txtResult.setText("Il numero di tifosi must be a nonnegative integer.");
-//    	  return;
-//    	}
+    	txtResult.clear();
+    	
+    	// controlli errore comboBox
+    	Integer cmbMonth = this.cmbMonth.getValue();
+    	if (cmbMonth==null) {
+    	    this.txtResult.setText("Si prega di selezionare un mese");
+    	    return;
+    	}
+    	
+    	// controlli errore numero intero
+    	int txtNumberAmbulance =0;
+    	try {
+    		txtNumberAmbulance = Integer.parseInt( this.txtNumberAmbulance.getText() );
+    	} catch(NumberFormatException e) {
+    	    this.txtResult.setText("Formato non valido. Il numero di ambulanze deve essere un intero!");
+    	    return;
+    	}
+    	// controllo che il numero non sia compreso tra 1 e 3
+    	if(txtNumberAmbulance<=0 || txtNumberAmbulance >3) {
+    	  this.txtResult.setText("Il numero di ambulanze per ogni distretto deve essere un numero compreso tra 1 e 3");
+    	  return;
+    	}
+    	
+    	
+    	// controlli errore numero intero
+    	int txtNumberHospital =0;
+    	try {
+    		txtNumberHospital = Integer.parseInt( this.txtNumberHospital.getText() );
+    	} catch(NumberFormatException e) {
+    	    this.txtResult.setText("Formato non valido. Il numero di distretti deve essere un intero");
+    	    return;
+    	}
+    	// controllo che il numero non sia compreso tra 1 e 21
+    	if(txtNumberHospital<=0 || txtNumberHospital >21) {
+    	  this.txtResult.setText("Il numero di distretti deve essere un numero compreso tra 1 e 21");
+    	  return;
+    	}
+    	
+      	// controlli errore numero double
+    	double txtProbability = 0.0;
+    	try {
+    		txtProbability = Double.parseDouble( this.txtProbability.getText() );
+    	} catch(NumberFormatException e) {
+    	    this.txtResult.setText("Formato non valido. Si prega di inserire un numero");
+    	    return;
+    	}
+    	// controllo che il numero non sia compreso tra 1 e 21
+    	if(txtProbability < 0 || txtProbability > 1) {
+    	  this.txtResult.setText("La probabilità deve essere un numero compreso tra 0 e 1");
+    	  return;
+    	}
+    
+    	
+    	
 //    	
 //    	
 //    	this.model.eseguiSimulazione(nomeTeam, anno, txtTifosi);
@@ -113,6 +145,8 @@ public class FXMLController {
 //    	for (String giocatore : model.getnTifosiPerPlayer().keySet()) {
 //    		this.txtResult.appendText("il giocatore "+giocatore+ " ha "+model.getnTifosiPerPlayer().get(giocatore) +" tifosi\n");
 //    	}
+    	
+    	this.cmbYear.setDisable(false);  
 
     }
 

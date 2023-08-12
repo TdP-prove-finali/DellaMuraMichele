@@ -63,17 +63,17 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </HBox.margin>
                   </ComboBox>
-                  <TextField fx:id="txtNumberAmbulance">
+                  <TextField fx:id="txtNumberAmbulance" promptText="numero di ambulanze">
                      <HBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </HBox.margin>
                   </TextField>
-                  <TextField fx:id="txtNumberHospital">
+                  <TextField fx:id="txtNumberHospital" promptText="numero di distretti">
                      <HBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </HBox.margin>
                   </TextField>
-                  <TextField fx:id="txtProbability">
+                  <TextField fx:id="txtProbability" promptText="probabilità ingorgo">
                      <HBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </HBox.margin>
