@@ -85,9 +85,11 @@ public class FXMLController {
     	
     	txtResult.clear();
     	
+    	Integer year = this.cmbYear.getValue();
+    	
     	// controlli errore comboBox
-    	Integer cmbMonth = this.cmbMonth.getValue();
-    	if (cmbMonth==null) {
+    	Integer month = this.cmbMonth.getValue();
+    	if (month==null) {
     	    this.txtResult.setText("Si prega di selezionare un mese");
     	    return;
     	}
@@ -135,12 +137,9 @@ public class FXMLController {
     	  return;
     	}
     
-    	
-    	
-//    	
-//    	
-//    	this.model.eseguiSimulazione(nomeTeam, anno, txtTifosi);
-//    	this.txtResult.appendText("Simulazione eseguita.\n");
+    	    	
+    	this.model.eseguiSimulazione(year, month, txtNumberAmbulance, txtNumberHospital, txtProbability);
+    	this.txtResult.appendText("Simulazione eseguita.\n");
 //    	this.txtResult.appendText("Il numero di tifosi persi dalla squadra "+ nomeTeam + " è: " + model.getnTifosiPersiTot()+"\n");
 //    	for (String giocatore : model.getnTifosiPerPlayer().keySet()) {
 //    		this.txtResult.appendText("il giocatore "+giocatore+ " ha "+model.getnTifosiPerPlayer().get(giocatore) +" tifosi\n");

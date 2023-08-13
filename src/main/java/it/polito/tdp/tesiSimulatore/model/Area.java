@@ -47,6 +47,14 @@ public class Area {
 	public void setCoords(LatLng coords) {
 		this.coords = coords;
 	}
+	
+	
+
+
+	@Override
+	public String toString() {
+		return "Area: "  + areaID + ", " + areaName + ", " + coords;
+	}
 
 
 	@Override

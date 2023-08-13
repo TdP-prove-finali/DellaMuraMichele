@@ -1,6 +1,6 @@
 package it.polito.tdp.tesiSimulatore.model;
 
-import java.util.ArrayList;
+
 
 import java.util.List;
 
@@ -15,10 +15,12 @@ import com.javadocmd.simplelatlng.util.LengthUnit;
 
 import it.polito.tdp.tesiSimulatore.dao.LAcollisionDAO;
 
+
 public class Model {
 	
 	private LAcollisionDAO dao;
 	private Graph<Area, DefaultWeightedEdge> grafo;
+	private Simulatore sim;
 //	private Map<Integer, Retailers> retailersIdMap;
 
 	
@@ -71,7 +73,7 @@ public class Model {
 				Area area1 = vertici.get(i);
 				Area area2 = vertici.get(j);
 				double distanzaArea =  LatLngTool.distance(area1.getCoords(), area2.getCoords(), LengthUnit.KILOMETER);			 
-				//aggiungo l'arco
+				//aggiungo i vertici e i relativi archi al grafo
 				Graphs.addEdgeWithVertices(this.grafo, area1, area2, distanzaArea);
 			}
 		}
@@ -80,14 +82,26 @@ public class Model {
 
 
 	public int getNVertici() {
-		// TODO Auto-generated method stub
 		return this.grafo.vertexSet().size();
 	}
 
 
 	public int getNArchi() {
-		// TODO Auto-generated method stub
 		return this.grafo.edgeSet().size();
+	}
+
+
+	public void eseguiSimulazione(Integer year, Integer month, int txtNumberAmbulance, int txtNumberHospital, double txtProbability) {
+		
+		// Creare simulatore e coda degli eventi
+		this.sim = new Simulatore(year, month, txtNumberAmbulance, txtNumberHospital, txtProbability);
+		sim.popolaCoda();	
+		// Eseguire simulazione
+		sim.processaEventi();
+		
+		
+		
+		
 	}
 
 }
