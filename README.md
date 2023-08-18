@@ -10,7 +10,7 @@
 
 4. Modificare, all'interno della classe DBConnect, contenuta nel package dao, la password di accesso al database, inserendo la propria;
 
-5. Visionare la guida all'utilizzo (URI: https://youtu.be/kYK9aQlIITU);
+5. Visionare la guida all'utilizzo (URI:);
 
 6. Eseguire la classe "Main" per avviare l'applicazione;
 
