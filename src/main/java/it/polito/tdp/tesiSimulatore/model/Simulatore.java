@@ -51,10 +51,10 @@ public class Simulatore {
     private LocalTime stopHour = LocalTime.of(23, 59);
     long dayHours;
 	
-//	private Duration timeNoTraffic = Duration.of(5, ChronoUnit.MINUTES);
-//	private Duration timeTraffic = Duration.of(8, ChronoUnit.MINUTES);
-//	
-//	
+	private Duration timeNoTraffic = Duration.of(5, ChronoUnit.MINUTES);
+	private Duration timeTraffic = Duration.of(8, ChronoUnit.MINUTES);
+	
+	
 	private Duration timeoutYellow = Duration.of(20, ChronoUnit.MINUTES);
 	private Duration timeoutRed = Duration.of(10, ChronoUnit.MINUTES);
 
@@ -94,8 +94,8 @@ public class Simulatore {
 		
 		this.dayHours = ChronoUnit.HOURS.between(startHour, stopHour);
 		
-		// script per recupare le coordinate geografiche di ogni area presente nella simulazione
-		this.areas = this.dao.getAllAreas();	
+		// recupero le coordinate geografiche di ogni area presente nella simulazione
+		this.areas = this.dao.getVertici(year);	
 		for (Area a : areas) {
 			a.setCoords(dao.getCoordsYearAndAreaSpecified(year, a.getAreaID()) );
 		}
@@ -120,12 +120,12 @@ public class Simulatore {
         for (int i=1; i<= txtNumberAmbulance; i++){
         	if (j == randomAreas.size()) {
         		j = 0;
-        		Ambulance a = new Ambulance(i, randomAreas.get(j), State.FREE);
+        		Ambulance a = new Ambulance(i, randomAreas.get(j), null, State.FREE);
         		ambulancesMap.put(i, a); 
         		j++;
         	}
         	else {
-            	Ambulance a = new Ambulance(i, randomAreas.get(j), State.FREE);
+            	Ambulance a = new Ambulance(i, randomAreas.get(j),  null, State.FREE);
             	ambulancesMap.put(i, a);   
             	j++;
         	}
@@ -191,17 +191,25 @@ public class Simulatore {
 		while(!queue.isEmpty()) {
 			
 			Event e = queue.poll();
-//			System.out.println(e);			
-			Area area = e.getAreaCollision();
+//			System.out.println(e);	
+			LocalDateTime istantCollision = e.getIstant();
 			
+			for (Ambulance a : ambulancesMap.values()) {
+				// se l'incidente è avvenuto dopo che l'ambulanza è tornata all'ospedale
+				if (a.getIstant() != null && istantCollision.isAfter(a.getIstant())) {
+					// allora ci troviamo in un intervallo temporale in cui quell'ambulanza è libera, in quanto tornata al nodo di partenza
+					a.setState(State.FREE);
+				}
+			}
+		
 			switch (e.getType()) {
 				
 			case RED:				
-				handleCase(timeoutRed, healRed, area);					
+				handleCase(timeoutRed, healRed, e);					
                 break;			
 		
 			case YELLOW:	
-				handleCase(timeoutYellow, healYellow, area);
+				handleCase(timeoutYellow, healYellow, e);
 				break;
 			
 			
@@ -214,30 +222,30 @@ public class Simulatore {
 	
 	// timeout: tempo entro il quale l'ambulanza deve arrivare, altrimenti vittima deceduta
 	// healingTime: tempo di cura della vittima
-	private void handleCase(Duration timeout, Duration healingTime, Area areaCollison) {
+	private void handleCase(Duration timeout, Duration healingTime, Event eventCollision) {
 
+		Area areaCollision = eventCollision.getAreaCollision();
+		LocalDateTime timeStampCollision = eventCollision.getIstant();
 		
 		// verifico se vi sono ambulanze disponibili
 		if (checkFreeAmbulances(ambulancesMap)) {				
 				
 				// verifico se delle ambulanze disponibli, ci sono quelle che si trovano nello stesso distretto dell'incidente		
-				if (AmbulancesSameDistrictOfCollision(ambulancesMap, areaCollison) != null) {
-					Ambulance a = AmbulancesSameDistrictOfCollision(ambulancesMap, areaCollison);
+				if (AmbulancesSameDistrictOfCollision(ambulancesMap, areaCollision) != null) {
+					Ambulance a = AmbulancesSameDistrictOfCollision(ambulancesMap, areaCollision);
 					a.setState(State.OCCUPIED);								
 					
 					// se si verifica ingorgo
 					double r = Math.random();
-					if (r < txtProbability) {
-						
-					}
-					else {
-						
-					}
+					if (r < txtProbability) 
+						// aggiungo minuti di andata e ritorno dell'ambulanza dall'ospedale
+						a.setIstant(timeStampCollision.plus(timeTraffic.multipliedBy(2)));				
+					else 				
+						a.setIstant(timeStampCollision.plus(timeNoTraffic.multipliedBy(2)));
 					
-					// si libera dopo minutaggio = arrivo sul luogo + cura + ritorno all'ospedale	
-			
+					// aggiungo minuti per curare vittima
+					a.getIstant().plus(healingTime);
 					this.peopleSavedNumber++;
-					a.setState(State.FREE);	
 				}
 				
 				// caso in cui non vi sono ambulanze nello stesso distretto della collisione
@@ -254,7 +262,7 @@ public class Simulatore {
 					
 					
 					for (Area area : areaWithFreeAmbulancesSet) {
-						double kmBetweenSourceTarget = dijkstra.getPath(area, areaCollison).getWeight();
+						double kmBetweenSourceTarget = dijkstra.getPath(area, areaCollision).getWeight();
 						if (kmBetweenSourceTarget < bestKm) {
 							bestKm = kmBetweenSourceTarget;	
 							bestArea = area;
@@ -272,35 +280,35 @@ public class Simulatore {
 					// se si verifica ingorgo
 					if (r < txtProbability) {
 						// velocità ambulanza con traffico pari a 70 km/h
-						pathTime = (int) (70/bestKm)*60;
+						pathTime = (int) (bestKm/70)*60;
 					}
 					else {
 						// velocità ambulanza con traffico pari a 40 km/h
-						pathTime =  (int) (40/bestKm)*60;								
+						pathTime =  (int) (bestKm/40)*60;								
 					}
 					
 					
 					// se l'ambulanza arriva in tempo sul luogo dell'incidente
 					
-					if (Duration.of(pathTime, ChronoUnit.MINUTES).compareTo(timeout) <=0 ) {
+					Duration pathTimeMinutesConverted = Duration.of(pathTime, ChronoUnit.MINUTES);
+					
+					if (pathTimeMinutesConverted.compareTo(timeout) <=0 ) {
 						
 						bestAmbulance.setState(State.OCCUPIED);
+						// minutaggio minutaggio arrivo sul luogo + cura + ritorno all'ospedale
+						bestAmbulance.setIstant(timeStampCollision.plus(pathTimeMinutesConverted.multipliedBy(2)));
+						bestAmbulance.getIstant().plus(healingTime);
 						this.peopleSavedNumber++;
-						// si libera dopo minutaggio minutaggio arrivo sul luogo + cura + ritorno all'ospedale
-						
-						bestAmbulance.setState(State.FREE);	
 						
 					}
 					
 					// se l'ambulanza NON arriva in tempo sul luogo dell'incidente
 					else {
-						// verifica che effetivamente la vittima sia deceduta recandosi sul luogo
+						// verifica che effetivamente la vittima sia deceduta recandosi sul luogo ma non vi è il tempo di cura della vittima
 						bestAmbulance.setState(State.OCCUPIED);
-						// si libera dopo minutaggio = arrivo sul luogo + ritorno all'ospedale	
-						bestAmbulance.setState(State.FREE);
-						
-						
-						
+						// minutaggio = arrivo sul luogo + ritorno all'ospedale	
+						bestAmbulance.setIstant(timeStampCollision.plus(pathTimeMinutesConverted.multipliedBy(2)));
+					
 					}
 					
 				}									

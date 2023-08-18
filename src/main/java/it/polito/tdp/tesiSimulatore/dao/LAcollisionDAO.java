@@ -19,34 +19,30 @@ import it.polito.tdp.tesiSimulatore.model.Collision;
 public class LAcollisionDAO {
 	
 	
-	/**
-	 * Metodo per leggere la lista di tutte le vendite nel database
-	 * @return
-	 */
 
-	public List<Area>  getAllAreas() {
-		
-		String query = "SELECT DISTINCT la.`Area ID`, la.`Area Name` "
-				+ "FROM la_traffic_collision la "
-				+ "ORDER BY la.`Area ID` ASC";
-		List<Area> result = new ArrayList<Area>();
-
-		try {
-			Connection conn = DBConnect.getConnection();
-			PreparedStatement st = conn.prepareStatement(query);
-			ResultSet rs = st.executeQuery();
-
-			while (rs.next()) {
-				result.add( new Area (rs.getInt("Area ID"), rs.getString("Area Name"), null) );
-			}
-			conn.close();
-			return result;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Errore connessione al database");
-			throw new RuntimeException("Error Connection Database");
-		}
-	}
+//	public List<Area>  getAllAreas() {
+//		
+//		String query = "SELECT DISTINCT la.`Area ID`, la.`Area Name` "
+//				+ "FROM la_traffic_collision la "
+//				+ "ORDER BY la.`Area ID` ASC";
+//		List<Area> result = new ArrayList<Area>();
+//
+//		try {
+//			Connection conn = DBConnect.getConnection();
+//			PreparedStatement st = conn.prepareStatement(query);
+//			ResultSet rs = st.executeQuery();
+//
+//			while (rs.next()) {
+//				result.add( new Area (rs.getInt("Area ID"), rs.getString("Area Name"), null) );
+//			}
+//			conn.close();
+//			return result;
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			System.out.println("Errore connessione al database");
+//			throw new RuntimeException("Error Connection Database");
+//		}
+//	}
 	
 	/**
 	 * Metodo per leggere la lista di tutte le vendite nel database

@@ -122,7 +122,7 @@ public class FXMLController {
     	
     	// controllo che il numero di ambulanze sia almeno pari al numero di ospedali
     	if(txtNumberAmbulance < txtNumberHospital) {
-    	  this.txtResult.setText("Il numero di ambulanze totale deve almeno pari al numero di ospedali");
+    	  this.txtResult.setText("Il numero di ambulanze totale deve almeno essere pari al numero di ospedali");
     	  return;
     	}
     	// controllo che il numero sia compreso tra 1 e 100

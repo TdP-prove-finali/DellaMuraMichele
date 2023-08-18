@@ -13,14 +13,14 @@ public class Ambulance {
 	
 	private int id;
 	private Area area;
-//	private LocalDateTime istant;
+	private LocalDateTime istant;
 	private State state;
 	
 	
-	public Ambulance(int id, Area area, State state) {
+	public Ambulance(int id, Area area, LocalDateTime istant, State state) {
 		this.id = id;
 		this.area = area;
-//		this.istant = istant;
+		this.istant = istant;
 		this.state = state;
 	}
 
@@ -45,14 +45,14 @@ public class Ambulance {
 	}
 
 
-//	public LocalDateTime getIstant() {
-//		return istant;
-//	}
-//
-//
-//	public void setIstant(LocalDateTime istant) {
-//		this.istant = istant;
-//	}
+	public LocalDateTime getIstant() {
+		return istant;
+	}
+
+
+	public void setIstant(LocalDateTime istant) {
+		this.istant = istant;
+	}
 
 
 	public State getState() {

@@ -1,12 +1,16 @@
 # Tesi - Simulatore incidenti stradali
 
-**Istruzioni per l' installazione:**
+**Istruzioni per l'installazione e l'utilizzo:**
 
-* Forkare e clonare sul proprio editor (ad esempio Eclipse) il progetto al link: https://github.com/TdP-prove-finali/DellaMuraMichele
+1. Forkare il repository del progetto (URI: https://github.com/TdP-prove-finali/DellaMuraMichele);
 
-* Importare sul proprio server locale il database "traffic_collision" situato all'interno della cartella db
+2. Importare il progetto Maven nel proprio IDE preferito;
 
-* Modificare all'interno della classe DBConnect la password di accesso al Database
+3. Caricare il file Database.zip (URI: https://github.com/TdP-prove-finali/DellaMuraMichele/blob/master/db/trafficCollisionCompressed.zip);
 
-* Aprire il progetto e lanciare la classe Main
+4. Modificare, all'interno della classe DBConnect, contenuta nel package dao, la password di accesso al database, inserendo la propria;
+
+5. Visionare la guida all'utilizzo (URI: https://youtu.be/kYK9aQlIITU);
+
+6. Eseguire la classe "Main" per avviare l'applicazione;
 
