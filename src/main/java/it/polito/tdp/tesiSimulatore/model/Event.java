@@ -1,53 +1,98 @@
 package it.polito.tdp.tesiSimulatore.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 public class Event implements Comparable<Event>{
 	
 	public enum EventType {
 		
-		YELLOW,
-		RED
+		RED,
+		YELLOW, FREE
+
 	}
 	
-	private LocalDate date ;
+	private LocalDateTime istant ;
 	private EventType type ;
-	private Area area;
-	
-	public Event(LocalDate date, EventType type, Area area) {
-		this.date = date;
-		this.type = type;
-		this.area = area;
-	}
+	private Area areaCollision ;
 	
 
-	public LocalDate getDate() {
-		return date;
+	public Event(LocalDateTime istant, EventType type, Area areaCollision) {
+		super();
+		this.istant = istant;
+		this.type = type;
+		this.areaCollision = areaCollision;
 	}
+	
+	
+
+
+
+	public LocalDateTime getIstant() {
+		return istant;
+	}
+
+
+
+
+
+	public void setIstant(LocalDateTime istant) {
+		this.istant = istant;
+	}
+
+
+
 
 
 	public EventType getType() {
 		return type;
 	}
-	
 
-	public Area getArea() {
-		return area;
+
+
+
+
+	public void setType(EventType type) {
+		this.type = type;
 	}
+
+
+
+
+
+	public Area getAreaCollision() {
+		return areaCollision;
+	}
+
+
+
+
+
+	public void setAreaCollision(Area areaCollision) {
+		this.areaCollision = areaCollision;
+	}
+
+
+
 
 
 	@Override
 	public int compareTo(Event other) {
-		// TODO Auto-generated method stub
-		return this.date.compareTo(other.date) ;
+
+		return this.istant.compareTo(other.istant);
 	}
+
+
+
 
 
 	@Override
 	public String toString() {
-		return "Event: " + date + ", " + type + ", " + area;
+		return "Event: " + istant + ", " + type + ", " + areaCollision;
 	}
+	
+	
+	
 
 
 

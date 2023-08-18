@@ -67,7 +67,8 @@ public class FXMLController {
         
         this.txtResult.setText("La città presenta " + this.model.getNVertici() + " distretti\n");
         
-        this.cmbYear.setDisable(true);        
+        this.cmbYear.setDisable(true);
+        this.btnCreateGraph.setDisable(true); 
         this.btnSimulation.setDisable(false);
         this.cmbMonth.setDisable(false);
         this.txtNumberAmbulance.setDisable(false);
@@ -94,21 +95,7 @@ public class FXMLController {
     	    return;
     	}
     	
-    	// controlli errore numero intero
-    	int txtNumberAmbulance =0;
-    	try {
-    		txtNumberAmbulance = Integer.parseInt( this.txtNumberAmbulance.getText() );
-    	} catch(NumberFormatException e) {
-    	    this.txtResult.setText("Formato non valido. Il numero di ambulanze deve essere un intero!");
-    	    return;
-    	}
-    	// controllo che il numero non sia compreso tra 1 e 3
-    	if(txtNumberAmbulance<=0 || txtNumberAmbulance >3) {
-    	  this.txtResult.setText("Il numero di ambulanze per ogni distretto deve essere un numero compreso tra 1 e 3");
-    	  return;
-    	}
-    	
-    	
+ 	
     	// controlli errore numero intero
     	int txtNumberHospital =0;
     	try {
@@ -117,9 +104,30 @@ public class FXMLController {
     	    this.txtResult.setText("Formato non valido. Il numero di distretti deve essere un intero");
     	    return;
     	}
-    	// controllo che il numero non sia compreso tra 1 e 21
-    	if(txtNumberHospital<=0 || txtNumberHospital >21) {
+    	// controllo che il numero sia compreso tra 1 e 21
+    	if(txtNumberHospital <=0 || txtNumberHospital > 21) {
     	  this.txtResult.setText("Il numero di distretti deve essere un numero compreso tra 1 e 21");
+    	  return;
+    	}
+    	
+    	
+    	// controlli errore numero intero
+    	int txtNumberAmbulance =0;
+    	try {
+    		txtNumberAmbulance = Integer.parseInt( this.txtNumberAmbulance.getText() );
+    	} catch(NumberFormatException e) {
+    	    this.txtResult.setText("Formato non valido. Il numero di ambulanze deve essere un intero");
+    	    return;
+    	}
+    	
+    	// controllo che il numero di ambulanze sia almeno pari al numero di ospedali
+    	if(txtNumberAmbulance < txtNumberHospital) {
+    	  this.txtResult.setText("Il numero di ambulanze totale deve almeno pari al numero di ospedali");
+    	  return;
+    	}
+    	// controllo che il numero sia compreso tra 1 e 100
+    	if(txtNumberAmbulance <= 0 || txtNumberAmbulance > 100) {
+    	  this.txtResult.setText("Il numero di ambulanze totale deve essere un numero compreso tra 1 e 100");
     	  return;
     	}
     	
@@ -128,7 +136,7 @@ public class FXMLController {
     	try {
     		txtProbability = Double.parseDouble( this.txtProbability.getText() );
     	} catch(NumberFormatException e) {
-    	    this.txtResult.setText("Formato non valido. Si prega di inserire un numero");
+    	    this.txtResult.setText("Formato non valido. Si prega di inserire un numero come valore di probabilità");
     	    return;
     	}
     	// controllo che il numero non sia compreso tra 1 e 21
@@ -139,13 +147,20 @@ public class FXMLController {
     
     	    	
     	this.model.eseguiSimulazione(year, month, txtNumberAmbulance, txtNumberHospital, txtProbability);
-    	this.txtResult.appendText("Simulazione eseguita.\n");
-//    	this.txtResult.appendText("Il numero di tifosi persi dalla squadra "+ nomeTeam + " è: " + model.getnTifosiPersiTot()+"\n");
-//    	for (String giocatore : model.getnTifosiPerPlayer().keySet()) {
-//    		this.txtResult.appendText("il giocatore "+giocatore+ " ha "+model.getnTifosiPerPlayer().get(giocatore) +" tifosi\n");
-//    	}
+    	this.txtResult.appendText("Simulazione dal mese " + month + " nell'anno " + year + " eseguita.\n");
+    	this.txtResult.appendText("Il numero di vittime salvate è " + this.model.getPeopleSavedNumber()+ " su un totale di " + model.getCollisionsNumber()+" vittime \n");
+    	this.txtResult.appendText("I luoghi in cui sono avvenuti gli incidenti sono:");
+    	for (String luogo : this.model.getPlaceCollisionSet()) {
+    		this.txtResult.appendText("\n" + luogo);
+    	}
     	
     	this.cmbYear.setDisable(false);  
+    	this.btnCreateGraph.setDisable(false); 
+        this.btnSimulation.setDisable(true);
+        this.cmbMonth.setDisable(true);
+        this.txtNumberAmbulance.setDisable(true);
+        this.txtNumberHospital.setDisable(true);
+        this.txtProbability.setDisable(true);
 
     }
 

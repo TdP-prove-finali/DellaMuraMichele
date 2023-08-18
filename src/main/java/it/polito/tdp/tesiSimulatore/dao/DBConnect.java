@@ -11,7 +11,7 @@ import com.zaxxer.hikari.HikariDataSource;
 public class DBConnect {
 	
 	
-	private static String jdbcURL = "jdbc:mariadb://localhost/traffic_collision";
+	private static String jdbcURL = "jdbc:mariadb://localhost/la_traffic_collision";
 	private static HikariDataSource ds;
 
 	public static Connection getConnection() {

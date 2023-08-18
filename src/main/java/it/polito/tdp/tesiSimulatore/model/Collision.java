@@ -7,7 +7,6 @@ import java.util.Objects;
 public class Collision {
 	
 	private int  drNumber;
-	private int timeOccured;
 	private int areaID;
 	private String areaName;
 	private int victimAge;
@@ -17,10 +16,9 @@ public class Collision {
 	private double longitude;
 	
 	
-	public Collision(int drNumber, int timeOccured, int areaID, String areaName, int victimAge, String location,
+	public Collision(int drNumber, int areaID, String areaName, int victimAge, String location,
 			LocalDate date, double latitude, double longitude) {
 		this.drNumber = drNumber;
-		this.timeOccured = timeOccured;
 		this.areaID = areaID;
 		this.areaName = areaName;
 		this.victimAge = victimAge;
@@ -38,16 +36,6 @@ public class Collision {
 
 	public void setDrNumber(int drNumber) {
 		this.drNumber = drNumber;
-	}
-
-
-	public int getTimeOccured() {
-		return timeOccured;
-	}
-
-
-	public void setTimeOccured(int timeOccured) {
-		this.timeOccured = timeOccured;
 	}
 
 
@@ -126,7 +114,7 @@ public class Collision {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(areaID, areaName, date, drNumber, latitude, location, longitude, timeOccured, victimAge);
+		return Objects.hash(areaID, areaName, date, drNumber, latitude, location, longitude, victimAge);
 	}
 
 
@@ -144,7 +132,7 @@ public class Collision {
 				&& Double.doubleToLongBits(latitude) == Double.doubleToLongBits(other.latitude)
 				&& Objects.equals(location, other.location)
 				&& Double.doubleToLongBits(longitude) == Double.doubleToLongBits(other.longitude)
-				&& timeOccured == other.timeOccured && victimAge == other.victimAge;
+				&& victimAge == other.victimAge;
 	}
 	
 	

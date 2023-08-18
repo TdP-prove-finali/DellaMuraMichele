@@ -17,12 +17,12 @@
          <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>
-         <padding>
-            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-         </padding>
          <effect>
             <Blend mode="DARKEN" />
-         </effect></Label>
+         </effect>
+         <padding>
+            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+         </padding></Label>
    </top>
    <center>
       <VBox BorderPane.alignment="CENTER">
@@ -63,12 +63,12 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </HBox.margin>
                   </ComboBox>
-                  <TextField fx:id="txtNumberAmbulance" promptText="numero di ambulanze">
+                  <TextField fx:id="txtNumberHospital" promptText="numero di ospedali">
                      <HBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </HBox.margin>
                   </TextField>
-                  <TextField fx:id="txtNumberHospital" promptText="numero di distretti">
+                  <TextField fx:id="txtNumberAmbulance" promptText="numero di ambulanze">
                      <HBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </HBox.margin>
