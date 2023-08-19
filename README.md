@@ -6,7 +6,7 @@
 
 2. Importare il progetto Maven nel proprio IDE preferito;
 
-3. Caricare il file Database.zip (URI: https://github.com/TdP-prove-finali/DellaMuraMichele/blob/master/db/trafficCollisionCompressed.zip);
+3. Caricare il file trafficCollisionCompressed.zip (URI: https://github.com/TdP-prove finali/DellaMuraMichele/blob/master/db/trafficCollisionCompressed.zip);
 
 4. Modificare, all'interno della classe DBConnect, contenuta nel package dao, la password di accesso al database, inserendo la propria;
 

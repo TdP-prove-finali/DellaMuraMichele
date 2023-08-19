@@ -40,16 +40,16 @@ public class Simulatore {
 	private LAcollisionDAO dao;
 	private List<Area> areas;
 	// lista di tutti gli incidenti avvenuti nell'anno e dal mese specificati
-	List<Collision> collisionsYearAndMonthSpecifiedList;
+	private List<Collision> collisionsYearAndMonthSpecifiedList;
 	// mappa on chiave: ID ambulanza, valore: classe Ambulance
 	private Map<Integer, Ambulance> ambulancesMap;
 	
-	DijkstraShortestPath<Area, DefaultWeightedEdge> dijkstra;
+	private DijkstraShortestPath<Area, DefaultWeightedEdge> dijkstra;
 	
 	// l'ambulanza lavora tutto il giorno
     private LocalTime startHour = LocalTime.of(0, 0); //rappresenterebbe mezzanotte 00:00
     private LocalTime stopHour = LocalTime.of(23, 59);
-    long dayHours;
+    private long dayHours;
 	
 	private Duration timeNoTraffic = Duration.of(5, ChronoUnit.MINUTES);
 	private Duration timeTraffic = Duration.of(8, ChronoUnit.MINUTES);
@@ -71,7 +71,7 @@ public class Simulatore {
 
 	
 	//coda degli eventi
-	PriorityQueue<Event> queue;
+	private PriorityQueue<Event> queue;
 
 	
 	
@@ -106,7 +106,7 @@ public class Simulatore {
         List<Area> randomAreas = new ArrayList<>();
 
         int z = 0;
-        while (z < txtNumberHospital) {
+        while (z < this.txtNumberHospital) {
             int randomIndex = (int) (Math.random() * areas.size());
             if (!indices.contains(randomIndex)) {
                 indices.add(randomIndex);
@@ -117,7 +117,7 @@ public class Simulatore {
          
         // associo il numero di ambulanze totali ad una delle aree scelte casualmente nel ciclo while precedente
         int j = 0;
-        for (int i=1; i<= txtNumberAmbulance; i++){
+        for (int i=0; i< this.txtNumberAmbulance; i++){
         	if (j == randomAreas.size()) {
         		j = 0;
         		Ambulance a = new Ambulance(i, randomAreas.get(j), null, State.FREE);
@@ -152,7 +152,14 @@ public class Simulatore {
 		
 		for (Collision c : collisionsYearAndMonthSpecifiedList) {
 			Event e = null;
-			LatLng coords = new LatLng(c.getLatitude(), c.getLongitude());
+
+			// recupero coordinate geografiche della zona
+			int areaIDCollision = c.getAreaID();
+			LatLng coords = null;
+			for (Area a : this.areas) {
+				if (a.getAreaID() == areaIDCollision)
+					coords = a.getCoords();			
+			}
 			Area areaIncidente = new Area (c.getAreaID(), c.getAreaName(), coords);
 			LocalDate date = c.getDate();
 			// attribuisco ad ogni incidente un tempo casuale in cui avviene
@@ -160,7 +167,8 @@ public class Simulatore {
 			ora = ora.plusMinutes(minutes);
 			
 			// aggiungo al set  il tipo di struttura o luogo in cui si è verificato l' incidente
-			this.placeCollisionSet.add(c.getLocation());
+			if (! (c.getLocation().isEmpty()) )
+				this.placeCollisionSet.add(c.getLocation());
 			
 			if (c.getVictimAge() < 18 || c.getVictimAge() > 70) {
 				e = new Event(LocalDateTime.of(date, ora), EventType.RED, areaIncidente);
@@ -214,7 +222,7 @@ public class Simulatore {
 			
 			
 			}
-			break;
+			
 		} 
 		
 	}
@@ -279,12 +287,12 @@ public class Simulatore {
 					
 					// se si verifica ingorgo
 					if (r < txtProbability) {
-						// velocità ambulanza con traffico pari a 70 km/h
-						pathTime = (int) (bestKm/70)*60;
+						// velocità ambulanza con traffico pari a 40 km/h
+						pathTime = (int) ((bestKm/40)*60);
 					}
 					else {
-						// velocità ambulanza con traffico pari a 40 km/h
-						pathTime =  (int) (bestKm/40)*60;								
+						// velocità ambulanza no traffico pari a 70 km/h
+						pathTime =  (int) ((bestKm/70)*60);								
 					}
 					
 					
@@ -323,7 +331,7 @@ public class Simulatore {
 		
 		Ambulance result = null;
 		for (Ambulance a : ambulancesMap.values()) {
-			if (a.getState().compareTo(State.FREE)==0 && a.getArea().equals(bestArea))
+			if (a.getState().equals(State.FREE) && a.getArea().equals(bestArea))
 				result = a;
 		}
 		return result;
@@ -337,7 +345,7 @@ public class Simulatore {
 		
 		Set<Area> result = new HashSet<>();
 		for (Ambulance a : ambulancesMap.values()) {
-			if (a.getState().compareTo(State.FREE)==0)
+			if (a.getState().equals(State.FREE))
 				result.add(a.getArea());
 		
 		}
@@ -360,7 +368,7 @@ public class Simulatore {
 	private boolean checkFreeAmbulances(Map<Integer, Ambulance> map) {
 		// TODO Auto-generated method stub
 		for (Ambulance a : map.values())
-			if (a.getState().compareTo(State.FREE)==0)		
+			if (a.getState().equals(State.FREE))		
 				return true;
 				
 		return false;

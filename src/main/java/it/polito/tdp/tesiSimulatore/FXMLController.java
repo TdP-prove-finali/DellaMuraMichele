@@ -1,12 +1,15 @@
 package it.polito.tdp.tesiSimulatore;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.tesiSimulatore.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -14,6 +17,11 @@ import javafx.scene.control.TextField;
 public class FXMLController {
 	
 	private Model model;
+	
+	private Map<Integer, String> monthsMap;
+	
+	// percentuale vittime salvate
+	private int percentage;
 
     @FXML
     private ResourceBundle resources;
@@ -26,6 +34,9 @@ public class FXMLController {
 
     @FXML
     private Button btnSimulation;
+    
+    @FXML
+    private ProgressBar cityProgressBar;
 
     @FXML
     private ComboBox<Integer> cmbMonth;
@@ -49,6 +60,10 @@ public class FXMLController {
     void handleCreateGraph(ActionEvent event) {
     	
     	txtResult.clear();
+        this.txtNumberAmbulance.clear();;
+        this.txtNumberHospital.clear();
+        this.txtProbability.clear();
+    	
     	// recupero valori immessi dall'utente con i relativi controlli  	
     	
     	// controlli errore comboBox
@@ -147,20 +162,19 @@ public class FXMLController {
     
     	    	
     	this.model.eseguiSimulazione(year, month, txtNumberAmbulance, txtNumberHospital, txtProbability);
-    	this.txtResult.appendText("Simulazione dal mese " + month + " nell'anno " + year + " eseguita.\n");
-    	this.txtResult.appendText("Il numero di vittime salvate è " + this.model.getPeopleSavedNumber()+ " su un totale di " + model.getCollisionsNumber()+" vittime \n");
+    	
+    	this.percentage = (int) Math.round(((double) this.model.getPeopleSavedNumber() / this.model.getCollisionsNumber()) * 100);   	
+    	
+    	this.txtResult.appendText("Simulazione eseguita a partire dal mese di " + this.monthsMap.get(month) + " dell'anno " + year + ".\n");
+    	this.txtResult.appendText("Sono state salvate " + this.model.getPeopleSavedNumber() + " vite,"
+    			+ " corrispondenti al " + percentage + "% del totale di " + this.model.getCollisionsNumber() + " vittime.\n");
     	this.txtResult.appendText("I luoghi in cui sono avvenuti gli incidenti sono:");
     	for (String luogo : this.model.getPlaceCollisionSet()) {
-    		this.txtResult.appendText("\n" + luogo);
+    		this.txtResult.appendText("\n" + luogo.strip());
     	}
     	
     	this.cmbYear.setDisable(false);  
     	this.btnCreateGraph.setDisable(false); 
-        this.btnSimulation.setDisable(true);
-        this.cmbMonth.setDisable(true);
-        this.txtNumberAmbulance.setDisable(true);
-        this.txtNumberHospital.setDisable(true);
-        this.txtProbability.setDisable(true);
 
     }
 
@@ -170,15 +184,17 @@ public class FXMLController {
         assert btnSimulation != null : "fx:id=\"Simulation\" was not injected: check your FXML file 'Scene.fxml'.";
         assert cmbMonth != null : "fx:id=\"cmbMonth\" was not injected: check your FXML file 'Scene.fxml'.";
         assert cmbYear != null : "fx:id=\"cmbYear\" was not injected: check your FXML file 'Scene.fxml'.";
+        assert cityProgressBar != null : "fx:id=\"cityProgressBar\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtNumberAmbulance != null : "fx:id=\"txtNumberAmbulance\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtNumberHospital != null : "fx:id=\"txtNumberHospital\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtProbability != null : "fx:id=\"txtProbability\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'Scene.fxml'.";
         
-    	//popolare la cmbYear
+    	//popolo la cmbYear
     	this.cmbYear.getItems().clear();
     	for (int i=2010; i<2023; i++)
     		this.cmbYear.getItems().add(i);
+    	
     	
         this.btnSimulation.setDisable(true);
         this.cmbMonth.setDisable(true);
@@ -192,6 +208,21 @@ public class FXMLController {
 	public void setModel(Model model) {
 		// TODO Auto-generated method stub
 		this.model = model;
+    	
+	    // popolo la monthsMap
+	    this.monthsMap = new HashMap<>();
+	    this.monthsMap.put(1, "gennaio");
+	    this.monthsMap.put(2, "febbraio");
+	    this.monthsMap.put(3, "marzo");
+	    this.monthsMap.put(4, "aprile");
+	    this.monthsMap.put(5, "maggio");
+	    this.monthsMap.put(6, "giugno");
+	    this.monthsMap.put(7, "luglio");
+	    this.monthsMap.put(8, "agosto");
+	    this.monthsMap.put(9, "settembre");
+	    this.monthsMap.put(10, "ottobre");
+	    this.monthsMap.put(11, "novembre");
+	    this.monthsMap.put(12, "dicembre");
 		
 	}
 

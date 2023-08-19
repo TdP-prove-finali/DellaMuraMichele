@@ -1,6 +1,7 @@
 package it.polito.tdp.tesiSimulatore.model;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 
 public class Ambulance {
@@ -63,6 +64,28 @@ public class Ambulance {
 	public void setState(State state) {
 		this.state = state;
 	}
+
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(area, id, istant, state);
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Ambulance other = (Ambulance) obj;
+		return Objects.equals(area, other.area) && id == other.id && Objects.equals(istant, other.istant)
+				&& state == other.state;
+	}
+	
+	
 	
 	
 

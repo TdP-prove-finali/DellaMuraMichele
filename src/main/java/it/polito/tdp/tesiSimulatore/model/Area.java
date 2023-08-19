@@ -75,6 +75,9 @@ public class Area {
 		return areaID == other.areaID && Objects.equals(areaName, other.areaName)
 				&& Objects.equals(coords, other.coords);
 	}
+
+
+
 	
 	
 
