@@ -9,7 +9,6 @@ import it.polito.tdp.tesiSimulatore.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -35,8 +34,6 @@ public class FXMLController {
     @FXML
     private Button btnSimulation;
     
-    @FXML
-    private ProgressBar cityProgressBar;
 
     @FXML
     private ComboBox<Integer> cmbMonth;
@@ -55,6 +52,10 @@ public class FXMLController {
 
     @FXML
     private TextArea txtResult;
+    
+
+
+
     
     @FXML
     void handleCreateGraph(ActionEvent event) {
@@ -184,7 +185,6 @@ public class FXMLController {
         assert btnSimulation != null : "fx:id=\"Simulation\" was not injected: check your FXML file 'Scene.fxml'.";
         assert cmbMonth != null : "fx:id=\"cmbMonth\" was not injected: check your FXML file 'Scene.fxml'.";
         assert cmbYear != null : "fx:id=\"cmbYear\" was not injected: check your FXML file 'Scene.fxml'.";
-        assert cityProgressBar != null : "fx:id=\"cityProgressBar\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtNumberAmbulance != null : "fx:id=\"txtNumberAmbulance\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtNumberHospital != null : "fx:id=\"txtNumberHospital\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtProbability != null : "fx:id=\"txtProbability\" was not injected: check your FXML file 'Scene.fxml'.";
