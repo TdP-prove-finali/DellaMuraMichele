@@ -18,43 +18,19 @@ import it.polito.tdp.tesiSimulatore.model.Collision;
 
 public class LAcollisionDAO {
 	
-	
 
-//	public List<Area>  getAllAreas() {
-//		
-//		String query = "SELECT DISTINCT la.`Area ID`, la.`Area Name` "
-//				+ "FROM la_traffic_collision la "
-//				+ "ORDER BY la.`Area ID` ASC";
-//		List<Area> result = new ArrayList<Area>();
-//
-//		try {
-//			Connection conn = DBConnect.getConnection();
-//			PreparedStatement st = conn.prepareStatement(query);
-//			ResultSet rs = st.executeQuery();
-//
-//			while (rs.next()) {
-//				result.add( new Area (rs.getInt("Area ID"), rs.getString("Area Name"), null) );
-//			}
-//			conn.close();
-//			return result;
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			System.out.println("Errore connessione al database");
-//			throw new RuntimeException("Error Connection Database");
-//		}
-//	}
-	
 	/**
-	 * Metodo per leggere la lista di tutte le vendite nel database
-	 * @return
+	 * Metodo per identificare le zone presenti nella città di Los Angeles nell'anno specificato
+	 * @param year
+	 * @return List
 	 */
 
 	public List<Area> getVertici(Integer year) {
 		
-		String query = "SELECT DISTINCT la.`Area ID`, la.`Area Name` "
+		String query = "SELECT DISTINCT la.`Area ID`, la.`Area Name`, AVG(la.Latitude) AS avgLat, AVG(la.Longitude) AS avgLon "
 				+ "FROM la_traffic_collision la "
 				+ "WHERE YEAR(la.`Data`) = ? "
-				+ "ORDER BY la.`Area ID` ASC";
+				+ "GROUP BY la.`Area ID`, la.`Area Name`";
 		List<Area> result = new ArrayList<Area>();
 
 		try {
@@ -64,7 +40,8 @@ public class LAcollisionDAO {
 			ResultSet rs = st.executeQuery();
 
 			while (rs.next()) {
-				result.add(new Area (rs.getInt("Area ID"), rs.getString("Area Name"), null) );
+				LatLng coords = new LatLng(rs.getDouble("avgLat"),rs.getDouble("avgLon"));
+				result.add(new Area (rs.getInt("Area ID"), rs.getString("Area Name"), coords) );
 			}
 			conn.close();
 			return result;
@@ -74,33 +51,47 @@ public class LAcollisionDAO {
 			throw new RuntimeException("Error Connection Database");
 		}
 	}
-
-	public LatLng getCoordsYearAndAreaSpecified(Integer year, int areaID) {
-		
-		String query = "SELECT l.`Area ID`, l.`Area Name`, AVG(l.Latitude) AS avgLat, AVG(l.Longitude) AS avgLon "
-				+ "FROM la_traffic_collision l "
-				+ "WHERE YEAR(l.`Data`) = ? AND l.`Area ID` = ? "
-				+ "GROUP BY l.`Area ID`, l.`Area Name`";
-		LatLng result = null;
-
-		try {
-			Connection conn = DBConnect.getConnection();
-			PreparedStatement st = conn.prepareStatement(query);
-			st.setInt(1, year);
-			st.setInt(2, areaID);
-			ResultSet rs = st.executeQuery();
-
-			if (rs.first()) {
-				result = new LatLng(rs.getDouble("avgLat"),rs.getDouble("avgLon"));
-			}
-			conn.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Errore connessione al database");
-			throw new RuntimeException("Error Connection Database");
-		}
-		return result;
-	}
+	
+//	/**
+//	 * Metodo per ottenere le coordinate di una zona presente nel database nell'anno e ID dell'area specificati
+//	 * @param year, areaID
+//	 * @return LatLng
+//	 */
+//
+//	public LatLng getCoordsYearAndAreaSpecified(Integer year, int areaID) {
+//		
+//		String query = "SELECT l.`Area ID`, l.`Area Name`, AVG(l.Latitude) AS avgLat, AVG(l.Longitude) AS avgLon "
+//				+ "FROM la_traffic_collision l "
+//				+ "WHERE YEAR(l.`Data`) = ? AND l.`Area ID` = ? "
+//				+ "GROUP BY l.`Area ID`, l.`Area Name`";
+//		LatLng result = null;
+//
+//		try {
+//			Connection conn = DBConnect.getConnection();
+//			PreparedStatement st = conn.prepareStatement(query);
+//			st.setInt(1, year);
+//			st.setInt(2, areaID);
+//			ResultSet rs = st.executeQuery();
+//
+//			if (rs.first()) {
+//				result = new LatLng(rs.getDouble("avgLat"),rs.getDouble("avgLon"));
+//			}
+//			conn.close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			System.out.println("Errore connessione al database");
+//			throw new RuntimeException("Error Connection Database");
+//		}
+//		return result;
+//	}
+	
+	/**
+	 * Metodo per ottenere gli incidenti stradali avvenuti nella città di LA
+	 * nell'anno e dal mese specificati.
+	 * Si noti che non vengono considerate le collisioni con età della vittima sconosciuta
+	 * @param  year, month
+	 * @return List
+	 */
 
 	// non considero gli incidenti che non hanno indicato l'età della vittima (l.`Victim Age` > 0)
 	public List<Collision> getCollisionsYearAndMonthSpec(Integer year, Integer month) {

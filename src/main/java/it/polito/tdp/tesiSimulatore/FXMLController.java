@@ -1,10 +1,12 @@
 package it.polito.tdp.tesiSimulatore;
 
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.tesiSimulatore.model.Area;
 import it.polito.tdp.tesiSimulatore.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,7 +22,7 @@ public class FXMLController {
 	private Map<Integer, String> monthsMap;
 	
 	// percentuale vittime salvate
-	private int percentage;
+	private double percentage;
 
     @FXML
     private ResourceBundle resources;
@@ -76,12 +78,15 @@ public class FXMLController {
 
     	
     	// creo il grafo
+//    	long tic = System.currentTimeMillis();
         this.model.creaGrafo(year);
+//      long toc = System.currentTimeMillis();
   
         // per verificare che il grafo sia creato con l'esatto numero di vertici e archi
 //      this.txtResult.setText("La città presenta " + this.model.getNVertici() + " distretti e ha " + this.model.getNArchi() +" archi\n");
         
         this.txtResult.setText("La città presenta " + this.model.getNVertici() + " distretti\n");
+//      this.txtResult.appendText("Elapsed time: " + (toc-tic) + " millisecondi" );
         
         this.cmbYear.setDisable(true);
         this.btnCreateGraph.setDisable(true); 
@@ -115,14 +120,14 @@ public class FXMLController {
     	// controlli errore numero intero
     	int txtNumberHospital =0;
     	try {
-    		txtNumberHospital = Integer.parseInt( this.txtNumberHospital.getText() );
+    		txtNumberHospital = Integer.parseInt( this.txtNumberHospital.getText().strip() );
     	} catch(NumberFormatException e) {
-    	    this.txtResult.setText("Formato non valido. Il numero di distretti deve essere un intero");
+    	    this.txtResult.setText("Formato non valido. Il numero di ospedali deve essere un intero");
     	    return;
     	}
     	// controllo che il numero sia compreso tra 1 e 21
     	if(txtNumberHospital <=0 || txtNumberHospital > 21) {
-    	  this.txtResult.setText("Il numero di distretti deve essere un numero compreso tra 1 e 21");
+    	  this.txtResult.setText("Il numero di ospedali deve essere un numero compreso tra 1 e 21");
     	  return;
     	}
     	
@@ -130,7 +135,7 @@ public class FXMLController {
     	// controlli errore numero intero
     	int txtNumberAmbulance =0;
     	try {
-    		txtNumberAmbulance = Integer.parseInt( this.txtNumberAmbulance.getText() );
+    		txtNumberAmbulance = Integer.parseInt( this.txtNumberAmbulance.getText().strip() );
     	} catch(NumberFormatException e) {
     	    this.txtResult.setText("Formato non valido. Il numero di ambulanze deve essere un intero");
     	    return;
@@ -150,9 +155,9 @@ public class FXMLController {
       	// controlli errore numero double
     	double txtProbability = 0.0;
     	try {
-    		txtProbability = Double.parseDouble( this.txtProbability.getText() );
+    		txtProbability = Double.parseDouble( this.txtProbability.getText().strip() );
     	} catch(NumberFormatException e) {
-    	    this.txtResult.setText("Formato non valido. Si prega di inserire un numero come valore di probabilità");
+    	    this.txtResult.setText("Formato non valido. Si prega di immettere un valore numerico come probabilità (utilizzare il punto e non la virgola come separatore decimale)");
     	    return;
     	}
     	// controllo che il numero non sia compreso tra 1 e 21
@@ -161,21 +166,45 @@ public class FXMLController {
     	  return;
     	}
     
-    	    	
-    	this.model.eseguiSimulazione(year, month, txtNumberAmbulance, txtNumberHospital, txtProbability);
-    	
-    	this.percentage = (int) Math.round(((double) this.model.getPeopleSavedNumber() / this.model.getCollisionsNumber()) * 100);   	
-    	
-    	this.txtResult.appendText("Simulazione eseguita a partire dal mese di " + this.monthsMap.get(month) + " dell'anno " + year + ".\n");
-    	this.txtResult.appendText("Sono state salvate " + this.model.getPeopleSavedNumber() + " vite,"
-    			+ " corrispondenti al " + percentage + "% del totale di " + this.model.getCollisionsNumber() + " vittime.\n");
-    	this.txtResult.appendText("I luoghi in cui sono avvenuti gli incidenti sono:");
-    	for (String luogo : this.model.getPlaceCollisionSet()) {
-    		this.txtResult.appendText("\n" + luogo.strip());
+    	long tic = System.currentTimeMillis(); 
+    	try {
+    		this.model.eseguiSimulazione(year, month, txtNumberAmbulance, txtNumberHospital, txtProbability);
+    		long toc = System.currentTimeMillis();
+        	this.txtResult.appendText("Elapsed time: " + (toc-tic)/1000 + " secondi \n" );
+        	DecimalFormat df = new DecimalFormat("###.###"); // per stampare la % con 3 cifre decimali
+        	this.percentage = ((double) this.model.getPeopleSavedNumber() / this.model.getCollisionsNumber() * 100);   	
+        	
+        	this.txtResult.appendText("Simulazione eseguita a partire dal mese di " + this.monthsMap.get(month) + " dell'anno " + year + ".\n");
+        	this.txtResult.appendText("Sono state salvate " + this.model.getPeopleSavedNumber() + " vite,"
+        			+ " corrispondenti al " + df.format(percentage) + "% del totale di " + this.model.getCollisionsNumber() + " vittime,"
+        					+ " considerando un totale di "+txtNumberHospital+ " ospedali e "+ txtNumberAmbulance+" ambulanze.\n");
+        	this.txtResult.appendText("Gli ospedali si trovano nei seguenti distretti:\n");
+        	
+        	boolean firstIteration = true;
+
+        	for (Area a : this.model.getRandomAreas()) {
+        	    if (firstIteration) {
+        	        this.txtResult.appendText(a.toString());
+        	        firstIteration = false;
+        	    } else {
+        	        this.txtResult.appendText(", " + a);
+        	    }
+        	}
+        	this.txtResult.appendText("\nI luoghi in cui sono avvenuti gli incidenti sono:");
+        	for (String luogo : this.model.getPlaceCollisionSet()) {
+        		this.txtResult.appendText("\n" + luogo.strip());
+        	}
+        	
+        	this.cmbYear.setDisable(false);  
+        	this.btnCreateGraph.setDisable(false); 
     	}
-    	
-    	this.cmbYear.setDisable(false);  
-    	this.btnCreateGraph.setDisable(false); 
+    	catch (IllegalArgumentException e) {
+    		this.txtResult.setText("Si prega di creare la città prima di avviare la simulazione con un nuovo anno.");
+			
+    		
+		}
+    		
+
 
     }
 
@@ -194,6 +223,7 @@ public class FXMLController {
     	this.cmbYear.getItems().clear();
     	for (int i=2010; i<2023; i++)
     		this.cmbYear.getItems().add(i);
+    	
     	
     	
         this.btnSimulation.setDisable(true);

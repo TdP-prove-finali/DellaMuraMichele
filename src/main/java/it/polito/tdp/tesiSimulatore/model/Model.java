@@ -41,9 +41,11 @@ public class Model {
 	}
 
 
-	// GRAFO
 	/**
-	 * Metodo che crea il grafo
+	 * Metodo che crea un grafo con i vertici che rappresentano i distretti della città di quell’anno considerato
+	 *  mentre il peso degli archi non orientati rappresenta la distanza in km tra un distretto ed un altro
+	 * @param  year
+	 * @return void
 	 */
 	public void creaGrafo(Integer year) {
 		clearGraph();
@@ -52,14 +54,7 @@ public class Model {
 
 		//assegnazione dei vertici
 		List<Area> vertici = this.dao.getVertici(year);
-		
-		//assegnazione degli archi
-		//calcoliamo gli archi da query
-		
-		// per ogni area vado a settare le sue coordinate geografiche
-		for (Area a : vertici) {
-			a.setCoords(dao.getCoordsYearAndAreaSpecified(year, a.getAreaID()) );
-		}
+
 		
 		// Doppio ciclo per ottenere le distanze in km tra le varie aree della città
 		for (int i = 0; i<vertici.size(); i++) {
@@ -111,6 +106,10 @@ public class Model {
 
 	public int getPeopleSavedNumber() {
 		return sim.getPeopleSavedNumber();
+	}
+	
+	public List<Area> getRandomAreas() {
+		return sim.getRandomAreas();
 	}
 
 

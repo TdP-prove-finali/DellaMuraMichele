@@ -26,25 +26,29 @@ import it.polito.tdp.tesiSimulatore.model.Ambulance.State;
 import it.polito.tdp.tesiSimulatore.model.Event.EventType;
 
 
-public class Simulatore {
+public class Simulatore {	
 	
 	//parametri di ingresso
 	private Integer year;
 	private Integer month;
 	private int txtNumberAmbulance;
 	private int txtNumberHospital;
-	private double txtProbability;
+	private double txtProbability;	
+	
 	
 	//parametri
-	
 	private LAcollisionDAO dao;
 	private List<Area> areas;
+	
 	// lista di tutti gli incidenti avvenuti nell'anno e dal mese specificati
 	private List<Collision> collisionsYearAndMonthSpecifiedList;
-	// mappa on chiave: ID ambulanza, valore: classe Ambulance
-	private Map<Integer, Ambulance> ambulancesMap;
 	
-	private DijkstraShortestPath<Area, DefaultWeightedEdge> dijkstra;
+	// mappa on chiave: ID ambulanza, valore: classe Ambulance
+	private Map<Integer, Ambulance> ambulancesMap;		
+	
+	private List<Area> randomAreas;	
+	
+	private DijkstraShortestPath<Area, DefaultWeightedEdge> dijkstra;		
 	
 	// l'ambulanza lavora tutto il giorno
     private LocalTime startHour = LocalTime.of(0, 0); //rappresenterebbe mezzanotte 00:00
@@ -59,16 +63,14 @@ public class Simulatore {
 	private Duration timeoutRed = Duration.of(10, ChronoUnit.MINUTES);
 
 	private Duration healYellow = Duration.of(30, ChronoUnit.MINUTES);
-	private Duration healRed = Duration.of(15, ChronoUnit.MINUTES);
+	private Duration healRed = Duration.of(15, ChronoUnit.MINUTES);	
 	
-
 	
 	//variabili di uscita
 	private int collisionsNumber;
 	private int peopleSavedNumber;
 	private Set<String> placeCollisionSet;
-
-
+		
 	
 	//coda degli eventi
 	private PriorityQueue<Event> queue;
@@ -78,7 +80,8 @@ public class Simulatore {
 	
 	
 	
-	public Simulatore(Integer year, Integer month, int txtNumberAmbulance, int txtNumberHospital, double txtProbability, DijkstraShortestPath<Area, DefaultWeightedEdge> dijkstra) {
+	public Simulatore(Integer year, Integer month, int txtNumberAmbulance, int txtNumberHospital, 
+			double txtProbability, DijkstraShortestPath<Area, DefaultWeightedEdge> dijkstra) {
 		
 		this.year = year;
 		this.month = month;
@@ -94,16 +97,17 @@ public class Simulatore {
 		
 		this.dayHours = ChronoUnit.HOURS.between(startHour, stopHour);
 		
-		// recupero le coordinate geografiche di ogni area presente nella simulazione
+
 		this.areas = this.dao.getVertici(year);	
-		for (Area a : areas) {
-			a.setCoords(dao.getCoordsYearAndAreaSpecified(year, a.getAreaID()) );
-		}
-		
+//      recupero le coordinate geografiche di ogni area presente nella simulazione
+//		for (Area a : areas) {
+//			a.setCoords(dao.getCoordsYearAndAreaSpecified(year, a.getAreaID()) );
+//		}
+//		
 		
 		// scelta casuali dei distretti che presentano un ospedale
         List<Integer> indices = new ArrayList<>();
-        List<Area> randomAreas = new ArrayList<>();
+        randomAreas = new ArrayList<>();
 
         int z = 0;
         while (z < this.txtNumberHospital) {
@@ -245,7 +249,7 @@ public class Simulatore {
 					
 					// se si verifica ingorgo
 					double r = Math.random();
-					if (r < txtProbability) 
+					if (r <= txtProbability) 
 						// aggiungo minuti di andata e ritorno dell'ambulanza dall'ospedale
 						a.setIstant(timeStampCollision.plus(timeTraffic.multipliedBy(2)));				
 					else 				
@@ -286,7 +290,7 @@ public class Simulatore {
 					double r = Math.random();
 					
 					// se si verifica ingorgo
-					if (r < txtProbability) {
+					if (r <= txtProbability) {
 						// velocità ambulanza con traffico pari a 40 km/h
 						pathTime = (int) ((bestKm/40)*60);
 					}
@@ -300,10 +304,10 @@ public class Simulatore {
 					
 					Duration pathTimeMinutesConverted = Duration.of(pathTime, ChronoUnit.MINUTES);
 					
-					if (pathTimeMinutesConverted.compareTo(timeout) <=0 ) {
+					if (pathTimeMinutesConverted.compareTo(timeout) <= 0 ) {
 						
 						bestAmbulance.setState(State.OCCUPIED);
-						// minutaggio minutaggio arrivo sul luogo + cura + ritorno all'ospedale
+						// minutaggio arrivo sul luogo + cura + ritorno all'ospedale
 						bestAmbulance.setIstant(timeStampCollision.plus(pathTimeMinutesConverted.multipliedBy(2)));
 						bestAmbulance.getIstant().plus(healingTime);
 						this.peopleSavedNumber++;
@@ -312,7 +316,8 @@ public class Simulatore {
 					
 					// se l'ambulanza NON arriva in tempo sul luogo dell'incidente
 					else {
-						// verifica che effetivamente la vittima sia deceduta recandosi sul luogo ma non vi è il tempo di cura della vittima
+						// verifica che effetivamente la vittima sia deceduta recandosi 
+						// sul luogo ma non vi è il tempo di cura della vittima
 						bestAmbulance.setState(State.OCCUPIED);
 						// minutaggio = arrivo sul luogo + ritorno all'ospedale	
 						bestAmbulance.setIstant(timeStampCollision.plus(pathTimeMinutesConverted.multipliedBy(2)));
@@ -389,6 +394,16 @@ public class Simulatore {
 	public int getPeopleSavedNumber() {
 		return peopleSavedNumber;
 	}
+
+
+
+	public List<Area> getRandomAreas() {
+		return randomAreas;
+	}
+
+
+
+
 	
 	
 	

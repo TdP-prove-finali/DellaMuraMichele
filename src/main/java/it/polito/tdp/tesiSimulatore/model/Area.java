@@ -53,7 +53,7 @@ public class Area {
 
 	@Override
 	public String toString() {
-		return "Area: "  + areaID + ", " + areaName + ", " + coords;
+		return areaName;
 	}
 
 
