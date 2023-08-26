@@ -31,8 +31,8 @@ public class Simulatore {
 	//parametri di ingresso
 	private Integer year;
 	private Integer month;
-	private int txtNumberAmbulance;
 	private int txtNumberHospital;
+	private int txtNumberAmbulance;
 	private double txtProbability;	
 	
 	
@@ -80,13 +80,13 @@ public class Simulatore {
 	
 	
 	
-	public Simulatore(Integer year, Integer month, int txtNumberAmbulance, int txtNumberHospital, 
+	public Simulatore(Integer year, Integer month, int txtNumberHospital, int txtNumberAmbulance, 
 			double txtProbability, DijkstraShortestPath<Area, DefaultWeightedEdge> dijkstra) {
 		
 		this.year = year;
 		this.month = month;
-		this.txtNumberAmbulance = txtNumberAmbulance;
 		this.txtNumberHospital = txtNumberHospital;
+		this.txtNumberAmbulance = txtNumberAmbulance;
 		this.txtProbability = txtProbability;
 		this.dijkstra = dijkstra;
 		this.dao = new LAcollisionDAO();
@@ -122,18 +122,15 @@ public class Simulatore {
         // associo il numero di ambulanze totali ad una delle aree scelte casualmente nel ciclo while precedente
         int j = 0;
         for (int i=0; i< this.txtNumberAmbulance; i++){
-        	if (j == randomAreas.size()) {
-        		j = 0;
-        		Ambulance a = new Ambulance(i, randomAreas.get(j), null, State.FREE);
-        		ambulancesMap.put(i, a); 
-        		j++;
-        	}
-        	else {
-            	Ambulance a = new Ambulance(i, randomAreas.get(j),  null, State.FREE);
-            	ambulancesMap.put(i, a);   
-            	j++;
-        	}
+        	if (j == randomAreas.size()) 
+        		j = 0;        	
+    		Ambulance a = new Ambulance(i, randomAreas.get(j), null, State.FREE);
+    		ambulancesMap.put(i, a); 
+    		j++;
+        	
         }
+
+
             
    }
 		

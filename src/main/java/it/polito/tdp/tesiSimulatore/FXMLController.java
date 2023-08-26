@@ -146,9 +146,9 @@ public class FXMLController {
     	  this.txtResult.setText("Il numero di ambulanze totale deve almeno essere pari al numero di ospedali");
     	  return;
     	}
-    	// controllo che il numero sia compreso tra 1 e 100
-    	if(txtNumberAmbulance <= 0 || txtNumberAmbulance > 100) {
-    	  this.txtResult.setText("Il numero di ambulanze totale deve essere un numero compreso tra 1 e 100");
+    	// controllo che il numero sia compreso tra 1 e 75
+    	if(txtNumberAmbulance <= 0 || txtNumberAmbulance > 75) {
+    	  this.txtResult.setText("Il numero di ambulanze totale deve essere un numero compreso tra 1 e 75");
     	  return;
     	}
     	
@@ -168,7 +168,7 @@ public class FXMLController {
     
     	long tic = System.currentTimeMillis(); 
     	try {
-    		this.model.eseguiSimulazione(year, month, txtNumberAmbulance, txtNumberHospital, txtProbability);
+    		this.model.eseguiSimulazione(year, month, txtNumberHospital, txtNumberAmbulance, txtProbability);
     		long toc = System.currentTimeMillis();
         	this.txtResult.appendText("Elapsed time: " + (toc-tic)/1000 + " secondi \n" );
         	DecimalFormat df = new DecimalFormat("###.###"); // per stampare la % con 3 cifre decimali
